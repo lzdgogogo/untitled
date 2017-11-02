@@ -9,6 +9,9 @@ from selenium.webdriver.common.by import By
 import sys
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from baidumusic.utils.log_utils import Logger
+
+Logger=Logger()
 
 # noinspection PyArgumentList
 class test_base(object):
@@ -18,7 +21,8 @@ class test_base(object):
         def __init__(self):
                 """功能：
                         初始化drier"""
-                self.print_log('测试开始')
+                Logger.info(message='测试开始')
+                #self.print_log('测试开始')
                 desired_caps={}
                 desired_caps['platformName']='Android'
                 desired_caps['platformVersion']='5.0'
@@ -32,7 +36,8 @@ class test_base(object):
                         关闭APP，driver退出，结束测试"""
                 self.driver.close_app()
                 self.driver.quit()
-                self.print_log('测试结束')
+                Logger.info(message='测试结束')
+                #self.print_log('测试结束')
                 sys.exit()
 
 
@@ -67,11 +72,13 @@ class test_base(object):
                 try:
                         WebDriverWait(self.driver,t).until(expected_conditions.presence_of_element_located((By.ID,element_id)))
                 except NoSuchElementException:
-                        self.print_log(thing+'超时')
+                        Logger.error(message=thing+'超时')
+                        #self.print_log(thing+'超时')
                         self.screenshot(thing+'等待超时截图')
                         self.driver.quit()
                         sys.exit(-1)
-                self.print_log(thing+'成功')
+                Logger.info(message=thing+'成功')
+                #self.print_log(thing+'成功')
 
         def get_size(self):
                 """功能：
@@ -95,7 +102,7 @@ class test_base(object):
 
         def reset_app(self):
                 """功能：
-                        重启APP"""
+                        重启APP,并且等待app重新启动完成"""
                 self.driver.close_app()
                 self.driver.launch_app()
                 self.wait_driver_by_id(15,'com.ting.mp3.android:id/vp','重启APP')
@@ -116,7 +123,8 @@ class test_base(object):
                 try:
                         self.driver.find_element_by_id(element_id)
                 except NoSuchElementException:
-                        self.print_log('当前所要查找控件在当前页面不能被找到')
+                        Logger.error(message='当前所要查找控件在当前页面不能被找到')
+                        #self.print_log('当前所要查找控件在当前页面不能被找到')
                         self.screenshot('查找不到控件页面截图')
                         self.driver.quit()
                         sys.exit(-1)
@@ -141,9 +149,9 @@ class test_base(object):
                 self.driver.find_element_by_xpath(xpath).click()
                 self.my_sleep(t)
 
-        def print_log(self,thing):
-                """功能：
-                        输出一个美观一点的信息
-                参数：
-                        要输出的信息，应该为一个字符串"""
-                print('------------------------- '+thing+' ----------------------------------')
+        # def print_log(self,thing):
+        #         """功能：
+        #                 输出一个美观一点的信息
+        #         参数：
+        #                 要输出的信息，应该为一个字符串"""
+        #         print('------------------------- '+thing+' ----------------------------------')

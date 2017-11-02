@@ -1,5 +1,7 @@
 import sys
+from baidumusic.utils.log_utils import Logger
 
+logger=Logger()
 __author__ = '刘子恒'
 from baidumusic.page_element.page_base import page_base
 #登录页面-手机号登录页，点击登录会直接跳转到此页面
@@ -14,10 +16,10 @@ class phone_login_page(page_base):
                 """判断是否在此页面"""
                 try:
                         if self.driver.find_element_by_xpath(self.go_to_account_login_button_xpath).is_displayed():
-                                self.print_log('在手机号登录页面')
+                                logger.info(message='在手机号登录页面')
                                 return 1
                 except:
-                        self.print_log('不在手机号登录页面')
+                        logger.error(message='不在手机号登录页面')
                         return 0
 
 

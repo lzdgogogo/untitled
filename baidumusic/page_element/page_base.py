@@ -2,6 +2,9 @@ import sys
 from appium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time
+from baidumusic.utils.log_utils import Logger
+
+Logger=Logger()
 
 __author__ = '刘子恒'
 class page_base(object):
@@ -13,7 +16,7 @@ class page_base(object):
                         关闭APP，driver退出，结束测试"""
                 self.driver.close_app()
                 self.driver.quit()
-                self.print_log('测试结束')
+                Logger.info(message='测试结束')
                 sys.exit()
 
         def get_size(self):
@@ -36,12 +39,12 @@ class page_base(object):
                 y2=int(size[1]*0.25)
                 self.driver.swipe(x1,y1,x1,y2,t)
 
-        def print_log(self,thing=''):
-                """功能：
-                        输出一个美观一点的信息
-                参数：
-                        要输出的信息，应该为一个字符串"""
-                print('------------------------- '+thing+' ----------------------------------')
+        # def print_log(self,thing=''):
+        #         """功能：
+        #                 输出一个美观一点的信息
+        #         参数：
+        #                 要输出的信息，应该为一个字符串"""
+        #         print('------------------------- '+thing+' ----------------------------------')
 
         def my_find_element_by_id(self,element_id):
                 """功能：
@@ -51,7 +54,7 @@ class page_base(object):
                 try:
                         self.driver.find_element_by_id(element_id)
                 except NoSuchElementException:
-                        self.print_log('当前所要查找控件在当前页面不能被找到')
+                        Logger.error(message='当前所要查找控件在当前页面不能被找到')
                         self.driver.quit()
                         sys.exit(-1)
 
@@ -63,7 +66,7 @@ class page_base(object):
                 try:
                         self.driver.find_element_by_xpath(element_xpath)
                 except NoSuchElementException:
-                        self.print_log('当前所要查找控件在当前页面不能被找到')
+                        Logger.error(message='当前所要查找控件在当前页面不能被找到')
                         self.driver.quit()
                         sys.exit(-1)
 
@@ -73,7 +76,7 @@ class page_base(object):
                 try:
                         self.driver.find_element_by_id(element_id).click()
                 except NoSuchElementException:
-                        self.print_log('当前所要点击控件在当前页面不能被找到')
+                        Logger.error(message='当前所要查找控件在当前页面不能被找到')
                         self.driver.quit()
                         sys.exit(-1)
 

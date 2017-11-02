@@ -10,8 +10,10 @@ from baidumusic.page_element.home_music_page import home_page
 from baidumusic.page_element.click_more_left_page import click_more_left_page
 from baidumusic.page_element.setting_page import setting_page
 from baidumusic.page_element.dialog_page import dialog_page
+from baidumusic.utils.log_utils import Logger
+Logger=Logger()
 
-class taihe_login_logout(test_base):
+class TaiheLoginLogout(test_base):
         def after_login(self):
                 """功能：
                         在登录之前做的准备工作,从启动app--我的页--判断登录态--进入手机号登录页
@@ -47,9 +49,9 @@ class taihe_login_logout(test_base):
                 self.my_sleep(3)
                 cur_account_login_page=account_login_page(self.driver)
                 if cur_account_login_page.is_at_account_login_page() == 1:
-                        self.print_log('进入账号密码登录页成功')
+                        Logger.info(message='进入账号密码登录页成功')
                 else:
-                        self.print_log('进入账号密码登录页失败')
+                        Logger.error(message='进入账号密码登录页失败')
                         self.tear_down()
 
                 cur_account_login_page.input_account(data.TAIHE_PHONE_NUMBER)
@@ -72,80 +74,75 @@ class taihe_login_logout(test_base):
                 self.my_sleep()
                 cur_homepage=home_page(self.driver)
                 cur_homepage.click_more_button()        #点击更多按钮
-                self.print_log('点击更多按钮')
+                Logger.info(message='点击更多按钮')
                 self.my_sleep()
 
                 cur_left_page=click_more_left_page(self.driver)
                 if cur_left_page.is_login() == -1:                      #判断是否在登录态
-                        self.print_log('当前在非登录态，先去登陆！')
+                        Logger.error(message='当前在非登录态，先去登陆！')
+
                         self.screenshot('登出功能——非登录状态截图')
                         self.reset_app()
                         self.test_taihe_login()
-
                         self.reset_app()
-                        self.wait_start_app()
                         cur_homepage=home_page(self.driver)
                         cur_homepage.click_more_button()        #点击更多按钮
-                        self.print_log('点击更多按钮')
+                        Logger.info(message='点击更多按钮')
                         self.my_sleep()
-
 
                 self.screenshot('登出功能——登录状态截图')
                 cur_left_page.click_setting_container()
-                self.print_log('点击设置按钮')
+                Logger.info(message='点击设置按钮')
                 self.my_sleep()
 
                 cur_settting_page=setting_page(self.driver)
                 cur_settting_page.click_signout_button()        #点击退出按钮
-                self.print_log('点击退出按钮')
+                Logger.info(message='点击退出按钮')
                 self.my_sleep(2)
 
                 cur_dialog_page=dialog_page(self.driver)
                 cur_dialog_page.click_yes_button()              #点击退出登录
-                self.print_log('点击退出登录')
+                Logger.info(message='点击退出登录')
                 self.my_sleep()
 
                 cur_homepage.click_more_button()                #点击更多按钮查看登录态
-                self.print_log('查看登录态')
+                Logger.info(message='查看登录态')
                 if cur_left_page.is_login() == 1:
                         return -2
-
                 return 1
 
         def test_sign_out(self):
                 """功能：
                         测试登出功能"""
                 self.wait_start_app()
-                self.print_log('开始测试登出功能')
+                Logger.info(message='开始测试登出功能')
 
                 if self.sign_out() == -2:
-                        self.print_log('当前还在登录状态！登出失败！')
+                        Logger.war(message='当前还在登录状态！登出失败!')
                         self.screenshot('登出功能——登出失败截图')
                 else:
-                        self.print_log('登出成功')
+                        Logger.info(message='登出成功')
                         self.screenshot('登出功能——登出成功截图')
 
         def test_taihe_login(self):
                 """功能：
                         测试登录功能"""
                 self.wait_start_app()
-                self.print_log('开始测试登录功能')
+                Logger.info(message='开始测试登录功能')
                 if self.after_login() == 1:
-                        self.print_log('已经在登录态了!需要先退出登录')
+                        Logger.war(message='已经在登录态了!需要先退出登录')
                         self.reset_app()
-                        self.wait_start_app()
-
                         self.test_sign_out()
 
                         if self.after_login() == 1:
-                                self.print_log('异常情况！退出测试')
+                                Logger.error(message='异常情况！退出测试')
                                 self.tear_down()
 
                 if self.taihe_login() == 1:
-                        self.print_log('登陆成功')
+                        Logger.info(message='登陆成功')
                         self.screenshot('登录功能——登录成功截图')
                 else:
-                        self.print_log('登录失败')
+                        Logger.error(message='登录失败')
                         self.screenshot('登录功能——登录失败截图')
 
 
