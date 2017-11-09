@@ -4,7 +4,7 @@ __author__ = '刘子恒'
 #主页的我的目录下       这个页面在登录态和非登录态会有区别
 from baidumusic.page_element.home_page import home_page
 
-class mine_main(home_page):
+class home_mine_page(home_page):
 
         #上边栏
         more_button_id='com.ting.mp3.android:id/more'                        #更多

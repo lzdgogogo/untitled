@@ -62,15 +62,16 @@ class test_base(object):
                 self.driver.get_screenshot_as_file(temp_path+'/'+'%d'%self.number+'.'+des+'.png')
                 self.number += 1
 
-        def wait_driver_by_id(self,t,element_id,thing=''):
+        def wait_element_by_mode(self,t,mode,element_id,thing=''):
                 """功能：
                         设置等待的函数。
                 参数：
-                        第一个参数t是最长等待时间。
-                        第二个element_id是等待的元素id，应该为字符串。
-                        第三个thing是等待的元素的描述，应该为字符串"""
+                        t:是最长等待时间。
+                        mode:查找模式，例如：By.ID,By.XPATH
+                        element:等待的元素查找依据，比如id,xpath，应该与mode的模式相匹配。
+                        thing：等待的元素的描述，应该为字符串"""
                 try:
-                        WebDriverWait(self.driver,t).until(expected_conditions.presence_of_element_located((By.ID,element_id)))
+                        WebDriverWait(self.driver,t).until(expected_conditions.presence_of_element_located((mode,element_id)))
                 except NoSuchElementException:
                         Logger.error(message=thing+'超时')
                         #self.print_log(thing+'超时')
@@ -105,13 +106,13 @@ class test_base(object):
                         重启APP,并且等待app重新启动完成"""
                 self.driver.close_app()
                 self.driver.launch_app()
-                self.wait_driver_by_id(15,'com.ting.mp3.android:id/vp','重启APP')
+                self.wait_element_by_mode(15,By.ID,'com.ting.mp3.android:id/vp','重启APP')
 
         def wait_start_app(self):
                 """功能：
                         等待app启动,并且截图"""
 
-                self.wait_driver_by_id(15,'com.ting.mp3.android:id/bubble','启动APP')
+                self.wait_element_by_mode(15,By.ID,'com.ting.mp3.android:id/bubble','启动APP')
                 self.screenshot('启动APP截图')
 
 
@@ -149,9 +150,77 @@ class test_base(object):
                 self.driver.find_element_by_xpath(xpath).click()
                 self.my_sleep(t)
 
+        def is_element_display(self,mode,element='',thing=''):
+                """功能：
+                        判断控件是否显示在当前页面上
+                参数：
+                        mode：以哪种方式寻找控件，必须是以下几种:By.ID, By.CLASS_NAME, By.XPATH, By.NAME
+                        element：控件的id或者xpath等，要跟前一项对应，
+                        thing：描述"""
+                try:
+                        if self.driver.find_element(mode,element).is_displayed():
+                                Logger.info(message=thing+'显示')
+                                #log_utils.C_INFO(thing+'显示')
+                                return 1
+                        else:
+                                Logger.error(message=thing+'未显示')
+                                #log_utils.F_ERROR(thing+'未显示')
+                                return 0
+                except:
+                        Logger.error(message=thing+'不在当前页面')
+                        # log_utils.F_ERROR(thing+'不在当前页面')
+                        return -1
+
+        def find_element_and_click(self,mode,element='',thing=''):
+                """功能：
+                        以某种方式查找控件并且点击，但是保证不会因为找不到控件而跳出
+                参数：
+                        mode：以哪种方式寻找控件，必须是以下几种:By.ID, By.CLASS_NAME, By.XPATH, By.NAME
+                        element：控件的id或者xpath等，要跟前一项对应，
+                        thing：描述
+                返回值：
+                        1：点击成功
+                        -1：控件不在当前页面"""
+                try:
+                        self.driver.find_element(mode,element).click()
+                        Logger.info(message='点击'+thing)
+                        return 1
+                except:
+                        Logger.error(message=thing+'不在当前页面')
+                        return -1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # def print_log(self,thing):
         #         """功能：
         #                 输出一个美观一点的信息
         #         参数：
         #                 要输出的信息，应该为一个字符串"""
         #         print('------------------------- '+thing+' ----------------------------------')
+
+
+
